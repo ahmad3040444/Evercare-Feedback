@@ -1,0 +1,86 @@
+<!-- 📄 سكربت HTML لحفظ تقييم العملاء مباشرة في Google Sheets باستخدام Google Apps Script -->
+
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>استبيان تجربة الخدمة - Evercare</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    body { font-family: sans-serif; background: #f9f9f9; margin: 0; padding: 20px; text-align: right; direction: rtl; }
+    .container { background: white; max-width: 600px; margin: auto; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+    h2 { text-align: center; }
+    label { display: block; margin: 20px 0 10px; font-weight: bold; }
+    .radio-group { display: flex; gap: 15px; margin-bottom: 15px; }
+    textarea, input[type="text"] { width: 100%; padding: 10px; margin-bottom: 20px; font-size: 16px; }
+    button { background: #4CAF50; color: white; border: none; padding: 15px 25px; font-size: 16px; cursor: pointer; border-radius: 5px; display: block; margin: auto; }
+    .logo { text-align: center; margin-bottom: 20px; }
+    .logo img { max-width: 200px; }
+    .thank-you { text-align: center; font-size: 18px; color: #333; margin-top: 30px; display: none; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <img src="logo.png" alt="Evercare Logo" />
+    </div>
+    <h2>استبيان تقييم تجربتك</h2>
+    <form id="feedbackForm">
+      <label>اسم العميل:</label>
+      <input type="text" name="client_name" required placeholder="اكتب اسمك هنا">
+
+      <label>1. كيف تقيم تجربتك مع الخدمة المنزلية؟</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q1" value="ممتاز" required /> ممتاز</label>
+        <label><input type="radio" name="q1" value="جيد" /> جيد</label>
+        <label><input type="radio" name="q1" value="ضعيف" /> ضعيف</label>
+      </div>
+
+      <label>2. هل كان الطاقم الطبي محترفًا في التعامل معك؟</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q2" value="نعم" required /> نعم</label>
+        <label><input type="radio" name="q2" value="لا" /> لا</label>
+      </div>
+
+      <label>3. هل تم تقديم الخدمة على حسب طلبك / احتياجك؟</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q3" value="نعم" required /> نعم</label>
+        <label><input type="radio" name="q3" value="لا" /> لا</label>
+      </div>
+
+      <label>4. هل لديك أي ملاحظات أو اقتراحات لتحسين الخدمة؟</label>
+      <textarea name="q4" placeholder="اكتب ملاحظاتك هنا (اختياري)"></textarea>
+
+      <button type="submit">إرسال</button>
+    </form>
+    <div class="thank-you" id="thankYouMessage">شكرًا لك لثقتك في Evercare – Your Path to Longevity</div>
+  </div>
+
+  <script>
+    document.getElementById('feedbackForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        client_name: form.client_name.value,
+        q1: form.q1.value,
+        q2: form.q2.value,
+        q3: form.q3.value,
+        q4: form.q4.value
+      };
+
+      try {
+        await fetch("https://script.google.com/macros/s/AKfycbwf--OW1xwnhj2XYvx6YF9xZNFnnfIAQj7x9Gvm8ZDs8g4O3jB8gsUdwXgAUticyoDxbA/exec", {
+          method: "POST",
+          mode: "no-cors",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data)
+        });
+        form.style.display = "none";
+        document.getElementById("thankYouMessage").style.display = "block";
+      } catch (err) {
+        alert("حدث خطأ أثناء الإرسال، حاول مرة أخرى.");
+      }
+    });
+  </script>
+</body>
+</html>
